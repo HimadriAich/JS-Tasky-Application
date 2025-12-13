@@ -10,7 +10,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
-<body>
+<body onload="LoadInitialData()">
 
   <!-- When we are on a smaller screen size like mobile, then the modal(On clicking Add New Card) will be like this (a bigger card) -->
   <!-- Custom div tag made by us -->
@@ -63,12 +63,13 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-        <button type="submit" class="btn btn-primary">Save changes</button>
+        <button type="submit" class="btn btn-primary" onclick="handleSubmit()">Save Changes</button>
       </div>
     </div>
   </div>
 </div>
 
+<!-- Note: Above, onclick is an event, which means that the function handleSubmit will be called when we click the Save Changes button -->
   <!-- Open Task Modal -->
 
   
