@@ -88,7 +88,7 @@ const  htmlTaskContent = ({id, title, description, type, url}) => `
             <div class="card-body">
                 ${
                     url &&
-                    `<img width="100%" src=${url} alt="Card Image" class="card-img-top md-3 rounded-lg"`
+                    `<img width="100%" src=${url} alt="Card Image" class="card-img-top md-3 rounded-lg" />`
                 }
 
                 <h4 class="card-title task__card__title">${title}</h4>
@@ -102,7 +102,7 @@ const  htmlTaskContent = ({id, title, description, type, url}) => `
             
             <div class="card-footer">
                 
-                <button type="button" class="btn-outline-primary float-right" data-bs-toggle="modal" data-bs-target="#showTask">Open Task</button>
+                <button type="button" class="btn btn-outline-primary float-right" data-bs-toggle="modal" data-bs-target="#showTask">Open Task</button>
             </div>
 
         </div>
@@ -120,7 +120,7 @@ const  htmlModalContent = ({id, title, description, url}) => {
     <div id=${id}>
     ${
         url &&
-        `<img width="100%" src=${url} alt="Card Image" class="img-fluid place__holder__image mb-3"`
+        `<img width="100%" src=${url} alt="Card Image" class="img-fluid place__holder__image mb-3"/>`
     } 
     
     <strong class="text-muted text-sm">Created on: ${date.toDateString()}</strong>
