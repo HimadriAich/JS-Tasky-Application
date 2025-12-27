@@ -72,6 +72,12 @@ console.log(taskModal); */
 // note: below you see the div tag is inside ``.........whenever you write something related to html,inside js file, use this
 
 //Note: element identifier key=${id} is been missing on line 67
+//htmlTaskContent is a function which takes an object as parameter and returns a string
+// its purpose is to generate the HTML code for a task card based on the provided data
+// we are using template literals to create the HTML code for the card
+// we are using destructuring to get the values from the object
+// we are using backticks(``) to create multi-line strings  
+// we are using ${} to insert the values from the object into the HTML code
 const  htmlTaskContent = ({id, title, description, type, url}) => `           
     
     <div class="col-md-6 col-lg-4 mt-3" id=${id} key=${id}>         
@@ -81,14 +87,15 @@ const  htmlTaskContent = ({id, title, description, type, url}) => `
                     <i class="fa-solid fa-pencil name=${id}"></i>
                 </button>
                   
-                <button type="button" class="btn btn-outline-danger mr-1.5" name=${id}>
+                <button type="button" class="btn btn-outline-danger mr-1.5" name=${id} onclick="DeleteTask.apply(this, arguments)">
                     <i class="fa-solid fa-trash name=${id}"></i>
                 </button>
             </div>
             <div class="card-body">
                 ${
-                    url &&
-                    `<img width="100%" src=${url} alt="Card Image" class="card-img-top md-3 rounded-lg" />`
+                    url 
+                    ? `<img width="100%" src=${url} alt="Card Image" class="card-img-top md-3 rounded-lg" />`
+                    : `<img width="100%" src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/3f/Placeholder_view_vector.svg/330px-Placeholder_view_vector.svg.png" alt="Card Image" class="card-img-top md-3 rounded-lg" />`
                 }
 
                 <h4 class="card-title task__card__title">${title}</h4>
@@ -102,7 +109,7 @@ const  htmlTaskContent = ({id, title, description, type, url}) => `
             
             <div class="card-footer">
                 
-                <button type="button" class="btn btn-outline-primary float-right" data-bs-toggle="modal" data-bs-target="#showTask">Open Task</button>
+                <button type="button" class="btn btn-outline-primary float-right" data-bs-toggle="modal" data-bs-target="#showTask" onclick="OpenTask.apply(this, arguments)" id=${id}>Open Task</button>
             </div>
 
         </div>
@@ -111,7 +118,10 @@ const  htmlTaskContent = ({id, title, description, type, url}) => `
 `;  
 
 // Below is the template for the modals that will be shown when we click Open Task
-const  htmlModalContent = ({id, title, description, url}) => {
+//htmlModalContent is a function which takes an object as parameter and returns a string
+// its purpose is to generate the HTML code for a task modal based on the provided data
+
+const  htmlModalContent = ({id, title, description, url}) => {            // this method is used to create the big modal that will be shown on clicking open task button
 
     //first we do the date, to show on which date task was created
     const date = new Date(parseInt(id));     //parseInt used to convert to integer
@@ -119,8 +129,9 @@ const  htmlModalContent = ({id, title, description, url}) => {
     return `
     <div id=${id}>
     ${
-        url &&
-        `<img width="100%" src=${url} alt="Card Image" class="img-fluid place__holder__image mb-3"/>`
+        url 
+        ? `<img width="100%" src=${url} alt="Card Image" class="card-img-top md-3 rounded-lg" />`
+        : `<img width="100%" src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/3f/Placeholder_view_vector.svg/330px-Placeholder_view_vector.svg.png" alt="Card Image" class="card-img-top md-3 rounded-lg" />`
     } 
     
     <strong class="text-muted text-sm">Created on: ${date.toDateString()}</strong>
@@ -139,8 +150,8 @@ const  htmlModalContent = ({id, title, description, url}) => {
 //here we convert JSON to string format, as local storage only stores in string format
 const updateLocalStorage = () => {                   // key should be in string format
 
-    localStorage.setItem(
-        "task",
+    localStorage.setItem(                           //setItem is used to set items in local storage
+        "task",                                      // "task" is the key in local storage where we store our tasks
         JSON.stringify({                                          //the stringify converts our JSON to string
             tasks: state.taskList,                            // this is how we can set items
         })
@@ -165,7 +176,7 @@ const updateLocalStorage = () => {                   // key should be in string 
 
 // Load Initial Data
 //here we convert string to JSON format, as local storage only stores in string format
-//for rendering the cards on the screen when we refresh the page
+//for rendering the initial cards(that we made) on the screen when we refresh the page
 const LoadInitialData = () => {
     // fetch task from local storage
     const localStorageCopy = JSON.parse(localStorage.task);   // we get the item in string format, so we parse it to convert to JSON format
@@ -201,7 +212,7 @@ const handleSubmit = (event) => {
         taskDescription: document.getElementById("taskDescription").value,   //getting value from input field having id taskDescription
     };
 
-    if (input.title === "" || input.tags === "" || input.taskDescription === "") {
+    if (input.title === "" || input.type === "" || input.description === "") {
         return alert("Please fill all the necessary fields :-)");
     }
 
@@ -212,6 +223,10 @@ state.taskList.push({...input, id});    //pushing the new task object to our sta
 
 updateLocalStorage();          //updating the local storage- used to store the tasks locally on the browser
 };
+
+
+
+
 // Date.now() gives us the current timestamp in milliseconds
 // we use this timestamp as the id for our tasks, as it is unique for each task
 // id refers to the date and time when the task is created
@@ -289,3 +304,77 @@ their computer, or navigates away from the page.
 //output: {name: "Rohan", age: 2, designation: "Developer"}
 // here we are spreading the elements of the obj object into individual elements
 // and adding a new property designation to the new object
+
+
+/****************************** D5CRUD ********************************** */
+
+// OPEN TASK MODAL- when we click on open task button, the modal should open with the details of the task
+// so we create a function to handle the click event on the open task button
+// this function will get the id of the task from the button's name attribute
+// then it will find the task in the state variable using the id
+
+const OpenTask = (e) => {
+    //console.log(e);               // e is the event object which is passed to the OpenTask function when the button is clicked
+    if (!e) e = window.event;      // if e is not defined, then we get the event object from the window object. window.event is used to get the event object in older browsers
+    const getTask = state.taskList.find(({id}) => id === e.target.id);   // getting the id of the task from the button's id attribute
+    taskModal.innerHTML = htmlModalContent(getTask);   // inserting the HTML code for the modal into the modal body
+}
+
+
+//NOTE: The above function OpenTask is to open the modal with the details of the task when we click on the open task button
+// e.target.id gives us the id of the button which was clicked
+// state.taskList.find is used to find the task in the state variable using the id
+// we are using destructuring to get the id from the object
+// htmlModalContent is a function which generates the HTML code for the modal
+// we are inserting the HTML code for the modal into the modal body using innerHTML
+
+ /**************************************************** */
+//DELETE TASK FUNCTIONALITY
+// when we click on the delete button, the task should be deleted from the state variable and local storage
+// so we create a function to handle the click event on the delete button
+
+const DeleteTask = (e) => {
+    if (!e) e = window.event;
+    const targetId = e.target.getAttribute("name");   // getting the id of the task from the button's name attribute
+   /* console.log(targetId); */   // to check if we are getting the correct id
+
+   const type = e.target.tagName;    // getting the tag name of the button which was clicked
+   /* console.log(type); */    // to check if we are getting the correct tag name
+
+   const removeTask = state.taskList.filter(({id}) => id !== targetId);   // filtering out the task which is to be deleted- except the task with the targetId, rest all tasks will be there in the taskList
+   /* console.log(removeTask); */   // to check if we are getting the correct array after filtering
+   
+   updateLocalStorage();          // updating the local storage after deleting the task, just like we updated the taskList after adding a new task
+
+   //very important conditon below- used to delete the task on the UI
+   if (type === "BUTTON") { 
+    //console.log(e.target.parentNode.parentNode.parentNode.parentNode);
+    return e.target.parentNode.parentNode.parentNode.parentNode.removeChild(
+        e.target.parentNode.parentNode.parentNode
+    );
+   } 
+
+   else if (type === "I") {
+    return e.target.parentNode.parentNode.parentNode.parentNode.parentNode.removeChild(
+        e.target.parentNode.parentNode.parentNode.parentNode
+    );
+   }
+};
+
+//Note: The above if condition is used to check if the element clicked is a button or not. If it is a button, then we remove the task from the DOM.
+// e.target.parentNode gives us the parent element of the button which was clicked
+// e.target.parentNode.parentNode gives us the grandparent element of the button which was clicked
+// e.target.parentNode.parentNode.parentNode gives us the great grandparent element of the button which was clicked
+// e.target.parentNode.parentNode.parentNode.parentNode gives us the great great grandparent element of the button which was clicked
+// removeChild is used to remove the child element from the parent element
+// here we are removing the great grandparent element of the button which was clicked from the great great grandparent element of the button which was clicked
+// i.e. we are removing the card from the DOM
+// similarly for the <i> tag
+// e.target.tagName gives us the tag name of the element which was clicked
+// here we are checking if the tag name is BUTTON or I (for the icon inside the button)
+
+
+
+
+
+
