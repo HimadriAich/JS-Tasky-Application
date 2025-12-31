@@ -83,7 +83,7 @@ const  htmlTaskContent = ({id, title, description, type, url}) => `
     <div class="col-md-6 col-lg-4 mt-3" id=${id} key=${id}>         
         <div class="card shadow-sm task__card">
             <div class="card-header d-flex justify-content-end task__card__header">
-                <button type="button" class="btn btn-outline-primary mr-1.5" name=${id}>
+                <button type="button" class="btn btn-outline-primary mr-1.5" name=${id} onclick="editTask.apply(this, arguments)">
                     <i class="fa-solid fa-pencil name=${id}"></i>
                 </button>
                   
@@ -372,6 +372,152 @@ const DeleteTask = (e) => {
 // similarly for the <i> tag
 // e.target.tagName gives us the tag name of the element which was clicked
 // here we are checking if the tag name is BUTTON or I (for the icon inside the button)
+
+/***********************D6EditNOpenLgModal************************************* */
+
+// EDIT TASK
+
+const editTask = (e) => {
+    if (!e) e = window.event;
+    const targetId = e.target.id;   // getting the id of the task from the button's id attribute
+    const type = e.target.tagName;    // getting the tag name of the button which was clicked
+
+    let parentNode;
+    let taskTitle;
+    let taskDescription;
+    let taskType;
+    let submitButton;    //when we  click on edit task button, the save changes button will be created dynamically
+
+
+if (type === "BUTTON") {
+    parentNode = e.target.parentNode.parentNode;   // getting the parent element of the button which was clicked
+}
+else {
+    parentNode = e.target.parentNode.parentNode.parentNode;  // getting the parent element of the <i> tag which was clicked
+}
+
+/* taskTitle = parentNode.childNodes[3].childNodes[3]; */   // getting the title of the task
+
+// here we will get the title of the task
+// similarly for taskDescription and taskType
+//in the above line we are basically navigating through the DOM to get the title, description and type of the task
+// childNodes is an array-like object which contains all the child nodes of the parent element
+
+// NOTE: ONLY THE ODD NUMBERED CHILDNODES ARE ELEMENT NODES, EVEN NUMBERED CHILDNODES ARE TEXT NODES (SPACES, NEWLINES ETC..)
+// so, we have to use the odd numbered childNodes to get the element nodes
+
+taskTitle = parentNode.childNodes[3].childNodes[3];   // getting the title of the task
+taskDescription = parentNode.childNodes[3].childNodes[5];   // getting the description of the task
+taskType = parentNode.childNodes[3].childNodes[7].childNodes[1];   // getting the type of the task
+submitButton = parentNode.childNodes[5].childNodes[1];   // getting the submit button of the task
+
+
+/* console.log(taskTitle, taskDescription, taskType); */   // to check if we are getting the correct values
+
+/*taskTitle=parentNode.childNodes[3].childNodes[3] means we are accessing the 4th child node of the parentNode(which is card-body) and then accessing the 4th child node of that(which is h4 tag having the title of the task)*/
+//taskDescription = parentNode.childNodes[3].childNodes[5];  // here we are accessing the 6th child node of the parentNode(which is card-body) and then accessing the 6th child node of that(which is p tag having the description of the task)
+//taskType = parentNode.childNodes[3].childNodes[7].childNodes[1];  // here we are accessing the 8th child node of the parentNode(which is card-body) and then accessing the 2nd child node of that(which is span tag having the type of the task)
+
+
+//TO EDIT DIRECTLY ON THE UI- use setAttribute to make the fields editable
+
+taskTitle.setAttribute("contenteditable", "true");    //true means we are allowed to edit the field  (by default it is false)
+taskDescription.setAttribute("contenteditable", "true");
+taskType.setAttribute("contenteditable", "true");
+
+//when we click on the edit task button, we want the save changes button to be created in place of the open task button
+
+submitButton.setAttribute("onclick", "saveEdit.apply(this, arguments)");   // when we click on the save changes button, the saveEdit function will be called
+submitButton.removeAttribute("data-bs-toggle");
+submitButton.removeAttribute("data-bs-target");
+//after this, when we click on the edit button, the modal will not open(open task button wont work)
+submitButton.innerHTML = "Save Changes";   // changing the text of the button to save changes
+};
+
+
+//saveEdit function to save the edited task
+const saveEdit = (e) => {
+    if (!e) e = window.event;
+    const targetId = e.target.id;
+//no need for const type = e.target.tagName; here as we are not using any icon
+
+    const parentNode = e.target.parentNode.parentNode;   // getting the parent element of the button which was clicked
+
+    const taskTitle = parentNode.childNodes[3].childNodes[3];   // getting the title of the task
+    const taskDescription = parentNode.childNodes[3].childNodes[5];   // getting the description of the task
+    const taskType = parentNode.childNodes[3].childNodes[7].childNodes[1];   // getting the type of the task
+    const submitButton = parentNode.childNodes[5].childNodes[1];   // getting the submit button of the task 
+
+    const updateData = {               //to store the updated data in an object
+        taskTitle: taskTitle.innerHTML,                   // innerHTML is used to get the text from the UI(content in the html tags)
+        taskDescription: taskDescription.innerHTML,
+        taskType: taskType.innerHTML,
+    };
+    
+    let stateCopy = state.taskList;   // creating a copy of the state variable
+
+    stateCopy = stateCopy.map((task) =>         // iterating over the array using map function
+        task.id === targetId                    // checking if the id of the task is equal to the targetId
+    ? {
+        id: task.id,                             // if yes, then we create a new object with the updated data
+        title: updateData.taskTitle,
+        description: updateData.taskDescription,
+        type: updateData.taskType,
+        url: task.url,
+      } 
+      : task                            // if no, then we return the task as it is
+    );
+
+    state.taskList = stateCopy;        // updating the state variable with the updated data
+
+    updateLocalStorage();              // updating the local storage with the updated data
+
+// making the fields non-editable after editing and saving the changes(click on Save Changes button)
+    taskTitle.setAttribute("contenteditable", "false");
+    taskDescription.setAttribute("contenteditable", "false");
+    taskType.setAttribute("contenteditable", "false");
+
+    //changing the button back to open task button
+    submitButton.setAttribute("onclick", "OpenTask.apply(this, arguments)");
+
+    // adding back the attributes to open the modal
+    submitButton.setAttribute("data-bs-toggle", "modal");
+    submitButton.setAttribute("data-bs-target", "#showTask");
+    
+    //after this, when we click on the button, the modal will open again
+    submitButton.innerHTML = "Open Task";   // changing the text of the button back to open task
+};
+
+//NOTE: The above function saveEdit is used to save the edited task when we click on the save changes button
+// e.target.id gives us the id of the button which was clicked
+// we are using destructuring to get the id from the object
+// innerHTML is used to get the text from the UI(content in the html tags)
+// we are creating a copy of the state variable to update the task
+// we are using map function to iterate over the array and update the task
+// if the id of the task is equal to the targetId, then we create a new object with the updated data
+// if not, then we return the task as it is
+// finally, we update the state variable with the updated data
+// then we update the local storage with the updated data
+// then we make the fields non-editable after editing and saving the changes
+// then we change the button back to open task button
+
+
+
+/****************SEARCH TASK*********************** */
+
+const searchTask = (e) => {
+    if (!e) e = window.event;
+
+    while (taskContents.firstChild) {
+        taskContents.removeChild(taskContents.firstChild);
+    }
+    const resultData = state.taskList.filter(({title}) => {
+        title.includes(e.target.value)         // includes is used to check if the title contains the search string
+    });
+
+    //console.log(resultData);
+}
+
 
 
 
