@@ -128,7 +128,7 @@
             <div class="row justify-content-center">
                 <div class="col-sm-12 col-md-6">      <!--grid has 12 columns, so we are splitting into 50-50 i.e 6 columns each, that's why we are writing col-md-6 (each div takes 6 columns each)-->
                   <div class="input-group flex-nowrap shadow-lg rounded">
-                    <input type="search" class="form-control" placeholder="Search Your Task Here..." aria-label="Search Task" aria-describedby="addon-wrapping">
+                    <input type="search" class="form-control" placeholder="Search Your Task Here..." aria-label="Search Task" aria-describedby="addon-wrapping" oninput="searchTask.apply(this, arguments)"/>
                     <span class="input-group-text" id="addon-wrapping">
                       <i class="fa-duotone fa-solid fa-magnifying-glass"></i>
                     </span>

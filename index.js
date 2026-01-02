@@ -503,7 +503,8 @@ const saveEdit = (e) => {
 
 
 
-/****************SEARCH TASK*********************** */
+/****************D7-SEARCH TASK*********************** */
+// when we type in the search bar, the searchTask function is called and task is getting searched based on the title
 
 const searchTask = (e) => {
     if (!e) e = window.event;
@@ -511,13 +512,23 @@ const searchTask = (e) => {
     while (taskContents.firstChild) {
         taskContents.removeChild(taskContents.firstChild);
     }
-    const resultData = state.taskList.filter(({title}) => {
-        title.includes(e.target.value)         // includes is used to check if the title contains the search string
+    const resultData = state.taskList.filter(({title}) => 
+        title.toLowerCase().includes(e.target.value.toLowerCase())         // includes is used to check if the title contains the search string
+    );
+
+    console.log(resultData);  // to check if we are getting the correct result
+
+// below what we are doing in simple words is that we are rendering(providing/presenting) the cards which match the search string
+// we are inserting the HTML code for the card into the taskContents div
+// for each cardData in the resultData array
+// we are calling the htmlTaskContent function to get the HTML code for the card
+    resultData.map((cardData) => {
+        taskContents.insertAdjacentHTML(
+            "beforeend",
+            htmlTaskContent(cardData)
+        )
     });
-
-    //console.log(resultData);
-}
-
+};
 
 
 
