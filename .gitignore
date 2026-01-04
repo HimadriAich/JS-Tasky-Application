@@ -1,0 +1,5 @@
+# we add the files/folders that we want git to ignore when we are pushing our project on github or any other remote repository
+# we wont need to delete these files/folders again and again before every commit
+
+node_modules
+package-lock.json
