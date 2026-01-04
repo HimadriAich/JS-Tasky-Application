@@ -13,5 +13,3 @@ A Tasky application using Javascript
 ## >> npm run dev
 
 ## >> npm: Node Package Manager
-
-
