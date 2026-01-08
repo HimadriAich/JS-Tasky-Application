@@ -1,133 +1,63 @@
-const http = require('http');          // Importing the HTTP module
+// BUILDING SERVER USING EXPRESS JS
+const express = require('express');   //importing express module
 
-const port = 8081;         // Defining the port number where the server will listen
+const app = express();              //creating app using express
+app.use(express.json());         // in simple words this line helps to convert json data to js object
 
-// HTTP METHODS: GET, POST, PUT, DELETE, PATCH
-/**
- * >> GET: To fetch data from the server. ITS THE DEFAULT METHOD
- * >> POST: To send data to the server.
- * >> PUT: To update existing data on the server.
- * >> DELETE: To delete data from the server.(the database)
- * >> PATCH: To make partial updates to existing data on the server.
- 
-Difeerence between PUT and PATCH:
-- PUT is used to update the entire resource, while PATCH is used to update a part of the resource.
-- PUT is indempotent, meaning that multiple identical requests will have the same effect as a single request. PATCH is not necessarily idempotent.
- */
+const port = 8081;
 
-const toDoList = ["learn", "apply things", "succeed"];  // Sample data representing a to-do list
+const toDoList = ["learn", "apply things", "succeed"];
 
-http.createServer((req, res) => {      // callback function to handle incoming requests
-    const { method, url } = req;          // Destructuring the method and url from the request object
-   // console.log(method, url);
-   //below the if condition is used to handle the request for /todos endpoint
-   // So when a request is made to /todos, it checks if the method is GET
-   // If it is, it responds with the toDoList data
-   // If the method is not GET, it simply ends the response without sending any data
-   // This is a basic way to handle different routes and methods in a Node.js HTTP server
-if(url === "/todos"){
-    if(method === "GET"){
-        res.writeHead(200, {'Content-Type': 'text/html'});     //writehead is used to write the response header with status code 200 (OK) 
-        res.write(toDoList.toString());      //write is used to write the response body with the toDoList data converted to a string
-    }
+// http://localhost:8081/todos
+// in express we can directly create routes using app.get, app.post etc methods
+//no need to use those if else or switch case statements like we did in pure node js server
+// to handle different routes 
+// GET method route
+app.get('/todos', (req, res) => {    // req -> request from client , res -> response from server
+    //res.writeHead(200);  // not needed in express js
+    //res.write(toDoList);  // not needed in express js)
 
-    else if(method === "POST"){
-        let body = "";          // Variable to store the incoming data
-        req.on('error', (err) => {       // Handling any errors during the request  (callback function for 'error' event)
-            console.log(err);     // Log any errors that occur during the request
-        }).on('data', (chunk) => {     // Listening for data chunks from the request  (callback function for 'data' event)
-            body += chunk;   // Append each chunk of data to the body variable
-            console.log(chunk);
-        }).on('end', () => {        // When all data has been received    (callback function for 'end' event)
-            body= JSON.parse(body);      // Parsing the received data as JSON
-           
-            let newToDo = toDoList;     // Reference to the existing toDoList array 
-            newToDo.push(body.item);        // Adding the new to-do item to the toDoList array
-            console.log(newToDo);    // Logging the updated toDoList to the console
-            //  console.log("data: ", body);            // Logging the received data to the console
-        }); 
-    }
-
-    else if(method === "DELETE"){
-        let body = "";          // Variable to store the incoming data
-        req.on('error', (err) => {       // Handling any errors during the request  (callback function for 'error' event)
-            console.log(err);     // Log any errors that occur during the request
-        }).on('data', (chunk) => {     // Listening for data chunks from the request  (callback function for 'data' event)
-            body += chunk;   // Append each chunk of data to the body variable
-        }).on('end', () => {        // When all data has been received    (callback function for 'end' event)
-            body= JSON.parse(body);      // Parsing the received data as JSON
-            //we need to remove the item from the toDoList array
-            let deleteThisItem= body.item;
-            for(let i=0; i<toDoList.length; i++){
-                if(toDoList[i] === deleteThisItem){
-                    toDoList.splice(i, 1);   // Removing the item from the toDoList array
-                    break;      // Breaking the loop after removing the item
-                }
-
-                else{
-                    console.error("Error: Item not found");      // Item not found
-                    break;
-                }
-            }
-            //Another method other than using for loop- find method
-           /*  toDoList.find((elem, index) => {
-                if(elem === deleteThisItem){
-                    /toDoList.splice(index, 1);   // Removing the item from the toDoList array
-                else{
-                    console.error("Error: Item not found");      // Item not found}
-                }
-            }); */
-            let newToDo = toDoList;     // Reference to the existing toDoList array
-            newToDo = newToDo.filter(item => item !== body.item);        // Removing the specified to-do item from the toDoList array
-            console.log(newToDo);    // Logging the updated toDoList to the console
-        });
-}
-    //DATA TRANSFERED IN HEXADECIMAL FORMAT 
-        //NOTE: while making POST request we use JSON format, and always write data in strings(double quotes)
-    else{
-        res.writeHead(501);          //501 means not implemented
-    }
-}
-
-else{
-    res.writeHead(404);              // 404 means not found
-}
-    res.end();                       // Ending the response without sending any data    
-    
-    
-    
-    // Request handling logic can be added here
-    // res.writeHead(200, {'Content-Type': 'text/html'});       // Setting the response header...........200 means success (OK)
-    // res.write('<h2>Hey Server Started You Can Proceed :-) </h2>');           // Writing a response message
-    // res.end();                                               // Ending the response
-
-})
-//below code is used to start the server.....same everywhere
-.listen(port, () => {                  // Listening on the specified port
-    console.log(`NodeJs Server Started Running on Port ${port}`);  // Logging a message when the server starts
-})
-
-/* http://localhost:8081/todos            give this link in the browser */
+    res.status(200).send(toDoList);  // sending response to client with status code 200
+}); 
 
 
-// This is a simple HTTP server that listens on port 8081. It does not handle any requests yet.
-// You can add request handling logic inside the createServer callback function.
-// For example, you can respond with a simple message for every request:
-// Above what we are basically doing is that we are creating a server using the http module in Node.js.
-// When a request is received, the callback function is executed with the request and response objects as parameters.
-// You can use the response object to send data back to the client.
+// POST method route
+app.post('/todos', (req, res) => {    // req -> request from client , res -> response from server
+
+    let newToDoItem = req.body.name;  // getting new todo item from request body
+    toDoList.push(newToDoItem);       // adding new todo item to the list
+    res.status(201).send({message: "Task added successfully"});   // sending updated todo list to client with status code 201
+}); 
+
+// DELETE method route
+app.delete('/todos', (req, res) => {    // req -> request from client , res -> response from server
+    const delteThisItem = req.body.name;  // getting todo item to delete from request body
+
+    toDoList.find((elem, index) => {   // finding the index of the todo item to delete
+        if(elem === delteThisItem){
+            toDoList.splice(index, 1);   // deleting the todo item from the list
+        }
+        res.status(202).send({message: `Deleted item ${req.body.name} `});   // sending response to client with status code 202
+    });
+
+});
+
+// FOR ALL THE METHODS (GET, POST, DELETE, PUT, PATCH etc)
+// if the route is not defined above then this route will be executed
+// this is like a fallback route
+// this will handle all the undefined routes
+// and send a response with status code 501 (not implemented)
+app.all('/todos', (req, res) => {             // req -> request from client , res -> response from server
+    res.status(501).send();   // sending response to client with status code 501 (not implemented)
+});
 
 
-/****************ROUTES******************* */
-// http://localhost:8081/signin
-// http://localhost:8081/signup
-// http://localhost:8081/Home
-// http://localhost:8081/ContactUs
-// http://localhost:8081/AboutUs
+app.listen(port, () => {      // starting server at port 8081
+    console.log(`Server is running on port ${port}`);
+});
 
-/*NOTE: IN ONE SERVER SESSION, YOU CAN DO AS MANY POST REQUESTS AS YOU WANT
-AND WHEN YOU CLICK GET METHOD, ALL THE DATA IS SHOWN(EVEN SAME ITEM REPEATED)
 
-BUT AS SOON AS YOU RESTART THE SERVER, THE DATA IS LOST.
-SO TO MAKE IT PERSISTENT, WE USE DATABASES LIKE MONGODB, MYSQL, ETC. 
-*/
+
+
+
+
