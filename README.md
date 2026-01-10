@@ -2,6 +2,13 @@
 
 Welcome to DailyTasks – a simple, fun, and interactive web application to manage your tasks! Keep track of your to-dos, create exciting new tasks, and never forget anything important! 🚀✨
 
+## 🔗 Live Demo
+
+👉 Try DailyTasks here:
+🌐 https://jsdailytask.netlify.app/
+
+Experience the full functionality of DailyTasks — add, edit, delete, and search tasks in real time, all stored locally in your browser 💾✨
+
 ## 🌟 Features
 
 ✅ Add Tasks Easily – Add a new task with a title, type, description, and even an image.
