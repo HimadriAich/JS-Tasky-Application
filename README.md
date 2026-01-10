@@ -80,7 +80,7 @@ Use the search bar at the top to quickly filter tasks by title. 🔍
 
 Clone the repository:
 
-git clone <your-repo-url>
+git clone https://github.com/HimadriAich/JS-Tasky-Application.git
 
 
 Open index.html in your favorite browser.
