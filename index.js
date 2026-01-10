@@ -1,6 +1,5 @@
 console.log("connected..")   
 // We will be storing the cards, locally on the browser
-
 /* var state = {                //state is an object
     taskList: [               // taskList is an array having multiple objects
         {
@@ -178,10 +177,14 @@ const updateLocalStorage = () => {                   // key should be in string 
 //here we convert string to JSON format, as local storage only stores in string format
 //for rendering the initial cards(that we made) on the screen when we refresh the page
 const LoadInitialData = () => {
-    // fetch task from local storage
-    const localStorageCopy = JSON.parse(localStorage.task);   // we get the item in string format, so we parse it to convert to JSON format
+    // fetch task from local storage using the key "task"
+    const localStorageCopy = JSON.parse(localStorage.getItem("task")) || { tasks: [] };   // we get the item in string format, so we parse it to convert to JSON format
+// fallback object to avoid crash on first load
+/********************************************************** */
 
-    if (localStorageCopy) state.taskList = localStorageCopy.tasks;   // we copy the tasks from local storage to our state variable
+     // copying tasks from local storage into our state variable
+    // this ensures state and local storage are always in sync
+    state.taskList = localStorageCopy.tasks;   // we copy the tasks from local storage to our state variable
 
     state.taskList.map((cardDate) => {            // map function is used to iterate over an array
         taskContents.insertAdjacentHTML(          // insertAdjacentHTML is used to insert HTML code
@@ -208,8 +211,8 @@ const handleSubmit = (event) => {
     const input = {                                 // getting the keys from html file into our js for creating new card and manipulating it
         url: document.getElementById("imageUrl").value,         //getting value from input field having id imageUrl
         title: document.getElementById("taskTitle").value,      //getting value from input field having id taskTitle
-        tags: document.getElementById("tags").value,            //getting value from input field having id tags
-        taskDescription: document.getElementById("taskDescription").value,   //getting value from input field having id taskDescription
+        type: document.getElementById("tags").value,            //getting value from input field having id tags
+        description: document.getElementById("taskDescription").value,   //getting value from input field having id taskDescription
     };
 
     if (input.title === "" || input.type === "" || input.description === "") {
@@ -334,7 +337,7 @@ const OpenTask = (e) => {
 // so we create a function to handle the click event on the delete button
 
 const DeleteTask = (e) => {
-    if (!e) e = window.event;
+    if (!e) e = window.event;    // fallback for older browsers if event object is not passed
     const targetId = e.target.getAttribute("name");   // getting the id of the task from the button's name attribute
    /* console.log(targetId); */   // to check if we are getting the correct id
 
@@ -344,6 +347,8 @@ const DeleteTask = (e) => {
    const removeTask = state.taskList.filter(({id}) => id !== targetId);   // filtering out the task which is to be deleted- except the task with the targetId, rest all tasks will be there in the taskList
    /* console.log(removeTask); */   // to check if we are getting the correct array after filtering
    
+   state.taskList = removeTask;    // updating the state variable with the new array after deleting the task. without this, the task will come back after page refresh    
+
    updateLocalStorage();          // updating the local storage after deleting the task, just like we updated the taskList after adding a new task
 
    //very important conditon below- used to delete the task on the UI

@@ -1,10 +1,163 @@
+/* =========================
+   GLOBAL RESET & BASE
+========================= */
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif; /* modern clean font */
+}
+
+body {
+    background: linear-gradient(135deg, #eef2ff, #e0ecff);
+    min-height: 100vh;
+}
+
+/* =========================
+   NAVBAR STYLING
+========================= */
+.navbar {
+    background: white !important;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    padding: 12px 20px;
+}
+
+.navbar-brand {
+    font-weight: 700;
+    font-size: 1.4rem;
+    color: #4f46e5 !important;
+}
+
+.nav-link {
+    font-weight: 500;
+}
+
+/* =========================
+   SEARCH BAR
+========================= */
+.input-group {
+    transition: all 0.3s ease;
+}
+
+.input-group:hover {
+    transform: translateY(-2px);
+}
+
+.input-group .form-control {
+    border-radius: 12px 0 0 12px;
+    padding: 14px;
+}
+
+.input-group-text {
+    border-radius: 0 12px 12px 0;
+    background: #4f46e5;
+    color: white;
+    border: none;
+}
+
+/* =========================
+   TASK CARDS
+========================= */
+.task__card {
+    border-radius: 18px;
+    overflow: hidden;
+    border: none;
+    transition: all 0.3s ease;
+}
+
+.task__card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 35px rgba(0, 0, 0, 0.12);
+}
+
+/* Card header buttons */
+.task__card__header button {
+    border-radius: 10px;
+}
+
+/* Card images */
+.card-img-top {
+    height: 200px;
+    object-fit: cover;
+}
+
+/* Card title */
+.task__card__title {
+    font-weight: 600;
+    margin-top: 12px;
+}
+
+/* Description */
+.description {
+    font-size: 0.9rem;
+}
+
+/* Badge */
+.badge {
+    border-radius: 20px;
+    padding: 6px 12px;
+    font-size: 0.75rem;
+}
+
+/* =========================
+   CARD FOOTER BUTTON
+========================= */
+.card-footer {
+    background: transparent;
+    border-top: none;
+}
+
+.card-footer .btn {
+    border-radius: 12px;
+    padding: 6px 16px;
+}
+
+/* =========================
+   MODALS
+========================= */
+.modal-content {
+    border-radius: 18px;
+}
+
+.modal-header {
+    background: #4f46e5;
+    color: white;
+    border-radius: 18px 18px 0 0;
+}
+
+.modal-header .btn-close {
+    filter: invert(1);
+}
+
+/* =========================
+   MOBILE ADD BUTTON
+========================= */
+.add__new__btn__mobile__only {
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    padding: 15px 12px;
+    background-color: white;
+    width: 100%;
+    z-index: 3;
+    box-shadow: 0 -8px 20px rgba(0, 0, 0, 0.1);
+}
+
+/* Hide mobile button on larger screens */
+@media (min-width: 768px) {
+    .add__new__btn__mobile__only {
+        display: none;
+    }
+}
+
+/*
 *{
     padding: 0;
     margin: 0;
 }
 
 body{
-    background-color: #ebf2ff !important;   /*if something is of high importance and it must be applied in the website , use !important*/
+    background-color: #ebf2ff !important;   /*if something is of high importance and it must be applied in the website , use !important
 }
 
 .add__new__btn__mobile__only{
@@ -19,6 +172,9 @@ body{
 
 @media (min-width: 768px) {
     .add__new__btn__mobile__only{
-        display: none;      /* display: none; means that the button would be hidden on bigger screen size*/
+        display: none;      /* display: none; means that the button would be hidden on bigger screen sizes like tablets and desktops 
     }
 }
+
+*/
+
