@@ -1,7 +1,3 @@
-<!-- # JS-Tasky-Application
-A Tasky application using Javascript
- -->
-
 ## 📋 DailyTasks - Your Fun Task Manager
 
 Welcome to DailyTasks – a simple, fun, and interactive web application to manage your tasks! Keep track of your to-dos, create exciting new tasks, and never forget anything important! 🚀✨
