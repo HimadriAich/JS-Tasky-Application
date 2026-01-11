@@ -97,4 +97,4 @@ Images & Favicons from Flaticon
 
 ## 📝 License
 
-This project is free to use and modify. MIT License applies.
+This project is free to use and modify. 
